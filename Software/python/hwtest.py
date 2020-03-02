@@ -93,7 +93,8 @@ def control_thread():
     while True:
         time.sleep(0.01)
         brightness = [get_normalized_reflectivity(c) for c in range(8)]
-        print(brightness)
+        if debug:
+            print([f"{b:1.2f}" for b in brightness])
         ii += 1
         if ii == 10:
             ii = 0
