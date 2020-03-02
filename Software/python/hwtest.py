@@ -8,6 +8,11 @@ from adafruit_servokit import ServoKit
 import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 
+from bokeh.io import curdoc
+from bokeh.layouts import column, row
+from bokeh.models import ColumnDataSource, Slider, TextInput
+from bokeh.plotting import figure
+
 if __name__ == "__main__":
     mux_io = [None] * 4
     mux_io[0] = digitalio.DigitalInOut(board.D17)
@@ -43,10 +48,24 @@ if __name__ == "__main__":
         
         return (get_reflectivity(chan) - black_cal[chan]) / (white_cal[chan] - black_cal[chan])
 
-    while True:
-        for ii in range(8):
-            print(f"{get_normalized_reflectivity(ii):1.2f}\t", end="")
-        print()
+    brightness_idx = np.arange(8)
+    brightness = [get_normalized_reflectivity(c) for c in range(8)]
+    plt_source = ColumnDataSource(data=dict(x=brightness_idx, y=brightness))
+    # Set up plot
+    plot = figure(plot_height=400, plot_width=400, title="my sine wave",
+                tools="crosshair,pan,reset,save,wheel_zoom",
+                x_range=[0, 4*np.pi], y_range=[-2.5, 2.5])
+
+    plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
+
+    def update_data(attrname, old, new):
+        brightness = [get_normalized_reflectivity(c) for c in range(8)]
+        plt_source.data = dict(x=brightness_idx, y=brightness)
+
+    curdoc().add_root(plot)
+    curdoc().title = "test"
+
+
 
     # servos = ServoKit(channels=16).continuous_servo
     # servos[0].throttle = 0

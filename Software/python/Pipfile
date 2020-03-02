@@ -14,6 +14,7 @@ scipy = "*"
 adafruit-circuitpython-servokit = "*"
 adafruit-circuitpython-ads1x15 = "*"
 adafruit-blinka = "*"
+bokeh = "*"
 
 [requires]
 #python_version = "3.6"
