@@ -2,6 +2,7 @@ import time
 import numpy as np
 
 import board
+import busio
 import digitalio
 from adafruit_servokit import ServoKit
 import adafruit_ads1x15.ads1015 as ADS
@@ -14,7 +15,8 @@ if __name__ == "__main__":
     mux[2] = digitalio.DigitalInOut(board.D22).value
     mux[3] = digitalio.DigitalInOut(board.D23).value
 
-    adc = ADS.ADS1015()
+    i2c = busio.I2C(board.SCL, board.SDA)
+    adc = ADS.ADS1015(i2c)
     adc_mux = AnalogIn(adc, ADS.P0)
 
     def get_reflectivity(chan):
