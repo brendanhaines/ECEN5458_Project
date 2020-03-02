@@ -41,7 +41,7 @@ if __name__ == "__main__":
         global white_cal
         global black_cal
         
-        return (get_reflectivity(chan) - black_cal) / (white_cal - black_cal)
+        return (get_reflectivity(chan) - black_cal[chan]) / (white_cal[chan] - black_cal[chan])
 
     while True:
         for ii in range(8):
