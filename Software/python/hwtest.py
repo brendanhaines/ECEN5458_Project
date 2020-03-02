@@ -27,8 +27,8 @@ if __name__ == "__main__":
         return adc_mux.voltage
 
     while True:
-        for ii in range(8):
-            print(get_reflectivity(ii), end="")
+        for ii in range(1):
+            print(f"{get_reflectivity(ii):1.2f}\t", end="")
         print()
 
     # servos = ServoKit(channels=16).continuous_servo
