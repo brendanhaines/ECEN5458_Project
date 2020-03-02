@@ -23,7 +23,7 @@ if __name__ == "__main__":
         chan = int(chan)
         global mux
         global adc_mux
-        mux = np.array(list(f"{chan:04b}"), dtype=int)
+        mux = 1-np.array(list(f"{chan:04b}"), dtype=int)
         return adc_mux.voltage
 
     while True:
