@@ -9,16 +9,14 @@ import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 
 if __name__ == "__main__":
-    mux_io = np.empty(4, dtype=object)
+    mux_io = [None] * 4
     mux_io[0] = digitalio.DigitalInOut(board.D17)
     mux_io[1] = digitalio.DigitalInOut(board.D27)
     mux_io[2] = digitalio.DigitalInOut(board.D22)
     mux_io[3] = digitalio.DigitalInOut(board.D23)
 
-    mux_io = np.empty(4, dtype=object)
     for ii, io in mux_io:
         io.switch_to_output()
-        mux[ii] = io.value
 
     i2c = busio.I2C(board.SCL, board.SDA)
     adc = ADS.ADS1015(i2c)
@@ -26,9 +24,11 @@ if __name__ == "__main__":
 
     def get_reflectivity(chan):
         chan = int(chan)
-        global mux
+        global mux_io
         global adc_mux
         mux = 1-np.array(list(f"{chan:04b}"), dtype=int)
+        for ii, io in mux_io:
+            io.value = mux[ii]
         return adc_mux.voltage
 
     while True:
