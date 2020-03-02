@@ -29,14 +29,20 @@ adc_mux = AnalogIn(adc, ADS.P0)
 white_cal = [0]*8
 black_cal = [5]*8
 
+adc_lock = threading.Lock()
+
 def get_reflectivity(chan):
     chan = int(chan)
     global mux_io
     global adc_mux
+    global adc_lock
     mux = 1-np.array(list(f"{chan:04b}"), dtype=int)
+    adc_lock.acquire()
     for ii, io in enumerate(mux_io):
         io.value = mux[ii]
-    return adc_mux.voltage
+    voltage = adc_mux.voltage
+    adc_lock.release()
+    return voltage
 
 def get_normalized_reflectivity(chan):
     global white_cal
@@ -60,16 +66,16 @@ def update_plot(attrname=None, old=None, new=None):
     brightness = [get_normalized_reflectivity(c) for c in range(8)]
     global plt_data
     plt_data = dict(x=brightness_idx, y=brightness)
-    plt_source.data = plt_data
+    # plt_source.data = plt_data
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
-    white_cal = brightness.copy()
+    white_cal = [get_reflectivity(c) for c in range(8)]
     update_plot()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
-    black_cal = brightness.copy()
+    black_cal = [get_reflectivity(c) for c in range(8)]
     update_plot()
 
 cal_white_button = Button(label="Cal White")
