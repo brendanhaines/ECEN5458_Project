@@ -33,7 +33,7 @@ if __name__ == "__main__":
     
     input("White calibration, press ENTER to continue...")
     white_cal = [get_reflectivity(c) for c in range(8)]
-    
+
     input("Black calibration, press ENTER to continue...")
     black_cal = [get_reflectivity(c) for c in range(8)]
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     while True:
         for ii in range(8):
-            print(f"{get_reflectivity(ii):1.2f}\t", end="")
+            print(f"{get_normalized_reflectivity(ii):1.2f}\t", end="")
         print()
 
     # servos = ServoKit(channels=16).continuous_servo
