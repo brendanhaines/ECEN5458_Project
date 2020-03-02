@@ -55,21 +55,19 @@ plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
 
 plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
-def update_data(attrname=None, old=None, new=None):
+def update_plot(attrname=None, old=None, new=None):
     brightness = [get_normalized_reflectivity(c) for c in range(8)]
     plt_source.data = dict(x=brightness_idx, y=brightness)
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
     white_cal = [get_reflectivity(c) for c in range(8)]
-    print(white_cal)
-    update_data()
+    update_plot()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
     black_cal = [get_reflectivity(c) for c in range(8)]
-    print(black_cal)
-    update_data()
+    update_plot()
 
 cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
@@ -85,7 +83,8 @@ curdoc().title = "test"
 def control_thread():
     while True:
         time.sleep(0.01)
-        update_data()
+        brightness = [get_normalized_reflectivity(c) for c in range(8)]
+        print(brightness)
 
 t = threading.Thread(target=control_thread)
 t.start()
