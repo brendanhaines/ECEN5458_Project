@@ -82,7 +82,12 @@ curdoc().add_root(row(controls, plot, width=800))
 # curdoc().add_root(row(plot, width=800))
 curdoc().title = "test"
 
-t = threading.timer(0.5,update_data)
+def control_thread():
+    while True:
+        time.sleep(0.01)
+        update_data()
+
+t = threading.Thread(target=control_thread)
 t.start()
 # while True:
 #     time.sleep(0.1)
