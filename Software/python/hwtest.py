@@ -46,37 +46,43 @@ if __name__ == "__main__":
 
     brightness_idx = np.arange(8)
     brightness = [get_normalized_reflectivity(c) for c in range(8)]
+
     plt_source = ColumnDataSource(data=dict(x=brightness_idx, y=brightness))
+
     # Set up plot
     plot = figure(plot_height=400, plot_width=400, title="my sine wave",
-                tools="crosshair,pan,reset,save,wheel_zoom",
-                x_range=[0, 4*np.pi], y_range=[-2.5, 2.5])
+                tools="save",
+                x_range=[0, 7], y_range=[0, 5])
 
     plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
-    def update_data():
+    def update_data(*args, **kwargs):
         brightness = [get_normalized_reflectivity(c) for c in range(8)]
         plt_source.data = dict(x=brightness_idx, y=brightness)
 
     def cal_white(*args, **kwargs):
         global white_cal
         white_cal = [get_reflectivity(c) for c in range(8)]
+        update_data()
 
     def cal_black(*args, **kwargs):
         global black_cal
         black_cal = [get_reflectivity(c) for c in range(8)]
+        update_data()
 
     cal_white_button = Button(label="Cal White")
     cal_white_button.on_click(cal_white)
     cal_black_button = Button(label="Cal Black")
     cal_black_button.on_click(cal_black)
+    
+    controls = column(cal_white_button, cal_black_button)
 
-    curdoc().add_root(row(column(cal_white_button, cal_black_button), plot))
+    curdoc().add_root(row(controls, plot, width=800))
     curdoc().title = "test"
 
-    while True:
-        time.sleep(0.1)
-        update_data()
+    # while True:
+    #     time.sleep(0.1)
+    #     update_data()
 
 
     # servos = ServoKit(channels=16).continuous_servo
