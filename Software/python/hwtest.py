@@ -30,9 +30,21 @@ if __name__ == "__main__":
         for ii, io in enumerate(mux_io):
             io.value = mux[ii]
         return adc_mux.voltage
+    
+    input("White calibration, press ENTER to continue...")
+    white_cal = [get_reflectivity(c) for c in range(8)]
+    
+    input("Black calibration, press ENTER to continue...")
+    black_cal = [get_reflectivity(c) for c in range(8)]
+
+    def get_normalized_reflectivity(chan):
+        global white_cal
+        global black_cal
+        
+        return (get_reflectivity(chan) - black_cal) / (white_cal - black_cal)
 
     while True:
-        for ii in range(1):
+        for ii in range(8):
             print(f"{get_reflectivity(ii):1.2f}\t", end="")
         print()
 
