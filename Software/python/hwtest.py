@@ -7,6 +7,7 @@ import digitalio
 from adafruit_servokit import ServoKit
 import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
+import threading
 
 from bokeh.io import curdoc
 from bokeh.layouts import column, row
@@ -81,9 +82,11 @@ curdoc().add_root(row(controls, plot, width=800))
 # curdoc().add_root(row(plot, width=800))
 curdoc().title = "test"
 
-while True:
-    time.sleep(0.1)
-    update_data()
+t = threading.timer(0.5,update_data)
+t.start()
+# while True:
+#     time.sleep(0.1)
+#     update_data()
 
 
 # servos = ServoKit(channels=16).continuous_servo
