@@ -42,6 +42,7 @@ def get_reflectivity(chan):
     adc_lock.acquire()
     for ii, io in enumerate(mux_io):
         io.value = mux[ii]
+    time.sleep(0.001)
     voltage = adc_mux.voltage
     adc_lock.release()
     return voltage
