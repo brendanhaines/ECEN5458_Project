@@ -66,10 +66,10 @@ plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
 plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
 def update_plot(attrname=None, old=None, new=None):
-    brightness = [get_normalized_reflectivity(c) for c in range(8)]
+    global brightness
     global plt_data
     plt_data = dict(x=brightness_idx, y=brightness)
-    # plt_source.data = plt_data
+    plt_source.data = plt_data
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
@@ -85,6 +85,8 @@ cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
 cal_black_button = Button(label="Cal Black")
 cal_black_button.on_click(cal_black)
+update_button = Button(label="Update Plot")
+update_button.on_click(update_plot)
 
 controls = column(cal_white_button, cal_black_button)
 
@@ -92,6 +94,7 @@ curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
 
 def control_thread():
+    global brightness
     ii = 0
     while True:
         time.sleep(0.01)
