@@ -49,9 +49,8 @@ brightness = [get_normalized_reflectivity(c) for c in range(8)]
 plt_source = ColumnDataSource(data=dict(x=brightness_idx, y=brightness))
 
 # Set up plot
-plot = figure(plot_height=400, plot_width=400, title="my sine wave",
-            tools="save",
-            x_range=[0, 7], y_range=[0, 5])
+plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
+            x_range=[0, 7], y_range=[0, 1])
 
 plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
@@ -82,9 +81,9 @@ curdoc().add_root(row(controls, plot, width=800))
 # curdoc().add_root(row(plot, width=800))
 curdoc().title = "test"
 
-# while True:
-#     time.sleep(0.1)
-#     update_data()
+while True:
+    time.sleep(0.1)
+    update_data()
 
 
 # servos = ServoKit(channels=16).continuous_servo
