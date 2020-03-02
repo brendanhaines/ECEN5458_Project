@@ -20,7 +20,9 @@ if __name__ == "__main__":
     def get_reflectivity(chan):
         chan = int(chan)
         global mux
+        global adc_mux
         mux = np.array(list(f"{chan:04b}"), dtype=int)
+        return adc_mux.voltage
 
     while True:
         for ii in range(8):
