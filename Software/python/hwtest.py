@@ -88,7 +88,7 @@ cal_black_button.on_click(cal_black)
 update_button = Button(label="Update Plot")
 update_button.on_click(update_plot)
 
-controls = column(cal_white_button, cal_black_button)
+controls = column(cal_white_button, cal_black_button, update_button)
 
 curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
@@ -107,7 +107,7 @@ def control_thread():
         if ii == 10:
             ii = 0
         if ii == 0:
-            plt_data['y'] = brightness
+            update_plot()
 
 
 t = threading.Thread(target=control_thread)
