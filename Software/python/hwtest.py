@@ -14,6 +14,8 @@ from bokeh.layouts import column, row
 from bokeh.models import ColumnDataSource, Slider, TextInput, Button
 from bokeh.plotting import figure
 
+DEBUG = True
+
 mux_io = [None] * 4
 mux_io[0] = digitalio.DigitalInOut(board.D17)
 mux_io[1] = digitalio.DigitalInOut(board.D27)
@@ -93,8 +95,10 @@ def control_thread():
     while True:
         time.sleep(0.01)
         brightness = [get_normalized_reflectivity(c) for c in range(8)]
-        if debug:
-            print([f"{b:1.2f}" for b in brightness])
+        if DEBUG:
+            for b in brightness:
+                print(f"{b:1.2f}\t", end="")
+            print()
         ii += 1
         if ii == 10:
             ii = 0
