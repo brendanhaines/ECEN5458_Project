@@ -15,7 +15,7 @@ if __name__ == "__main__":
     mux_io[2] = digitalio.DigitalInOut(board.D22)
     mux_io[3] = digitalio.DigitalInOut(board.D23)
 
-    for ii, io in mux_io:
+    for ii, io in enumerate(mux_io):
         io.switch_to_output()
 
     i2c = busio.I2C(board.SCL, board.SDA)
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         global mux_io
         global adc_mux
         mux = 1-np.array(list(f"{chan:04b}"), dtype=int)
-        for ii, io in mux_io:
+        for ii, io in enumerate(mux_io):
             io.value = mux[ii]
         return adc_mux.voltage
 
