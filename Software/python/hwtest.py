@@ -47,7 +47,8 @@ def get_normalized_reflectivity(chan):
 brightness_idx = np.arange(8)
 brightness = [get_normalized_reflectivity(c) for c in range(8)]
 
-plt_source = ColumnDataSource(data=dict(x=brightness_idx, y=brightness))
+plt_data = dict(x=brightness_idx, y=brightness)
+plt_source = ColumnDataSource(data=plt_data)
 
 # Set up plot
 plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
@@ -57,7 +58,9 @@ plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
 def update_plot(attrname=None, old=None, new=None):
     brightness = [get_normalized_reflectivity(c) for c in range(8)]
-    plt_source.data = dict(x=brightness_idx, y=brightness)
+    global plt_data
+    plt_data = dict(x=brightness_idx, y=brightness)
+    # plt_source.data = plt_data
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
@@ -81,10 +84,17 @@ curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "test"
 
 def control_thread():
+    ii = 0
     while True:
         time.sleep(0.01)
         brightness = [get_normalized_reflectivity(c) for c in range(8)]
         print(brightness)
+        ii += 1
+        if ii == 10:
+            ii = 0
+        if ii == 0:
+            plt_data['y'] = brightness
+
 
 t = threading.Thread(target=control_thread)
 t.start()
