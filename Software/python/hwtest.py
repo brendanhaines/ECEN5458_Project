@@ -4,7 +4,7 @@ import numpy as np
 import board
 import digitalio
 from adafruit_servokit import ServoKit
-from adafruit_ads1x15.ads1015 import ADS
+import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 
 if __name__ == "__main__":
