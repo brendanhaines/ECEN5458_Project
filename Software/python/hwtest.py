@@ -10,7 +10,7 @@ from adafruit_ads1x15.analog_in import AnalogIn
 
 from bokeh.io import curdoc
 from bokeh.layouts import column, row
-from bokeh.models import ColumnDataSource, Slider, TextInput
+from bokeh.models import ColumnDataSource, Slider, TextInput, Button
 from bokeh.plotting import figure
 
 if __name__ == "__main__":
@@ -26,6 +26,8 @@ if __name__ == "__main__":
     i2c = busio.I2C(board.SCL, board.SDA)
     adc = ADS.ADS1015(i2c)
     adc_mux = AnalogIn(adc, ADS.P0)
+    white_cal = [0]*8
+    black_cal = [5]*8
 
     def get_reflectivity(chan):
         chan = int(chan)
@@ -35,12 +37,6 @@ if __name__ == "__main__":
         for ii, io in enumerate(mux_io):
             io.value = mux[ii]
         return adc_mux.voltage
-    
-    input("White calibration, press ENTER to continue...")
-    white_cal = [get_reflectivity(c) for c in range(8)]
-
-    input("Black calibration, press ENTER to continue...")
-    black_cal = [get_reflectivity(c) for c in range(8)]
 
     def get_normalized_reflectivity(chan):
         global white_cal
@@ -58,13 +54,29 @@ if __name__ == "__main__":
 
     plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
-    def update_data(attrname, old, new):
+    def update_data():
         brightness = [get_normalized_reflectivity(c) for c in range(8)]
         plt_source.data = dict(x=brightness_idx, y=brightness)
 
-    curdoc().add_root(plot)
+    def cal_white(*args, **kwargs):
+        global white_cal
+        white_cal = [get_reflectivity(c) for c in range(8)]
+
+    def cal_black(*args, **kwargs):
+        global black_cal
+        black_cal = [get_reflectivity(c) for c in range(8)]
+
+    cal_white_button = Button(label="Cal White")
+    cal_white_button.on_click(cal_white)
+    cal_black_button = Button(label="Cal Black")
+    cal_black_button.on_click(cal_black)
+
+    curdoc().add_root(row(column(cal_white_button, cal_black_button), plot))
     curdoc().title = "test"
 
+    while True:
+        time.sleep(0.1)
+        update_data()
 
 
     # servos = ServoKit(channels=16).continuous_servo
