@@ -55,16 +55,16 @@ plot = figure(plot_height=400, plot_width=400, title="my sine wave",
 
 plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
 
-def update_data(*args, **kwargs):
+def update_data(attrname=None, old=None, new=None):
     brightness = [get_normalized_reflectivity(c) for c in range(8)]
     plt_source.data = dict(x=brightness_idx, y=brightness)
 
-def cal_white(*args, **kwargs):
+def cal_white(attrname=None, old=None, new=None):
     global white_cal
     white_cal = [get_reflectivity(c) for c in range(8)]
     update_data()
 
-def cal_black(*args, **kwargs):
+def cal_black(attrname=None, old=None, new=None):
     global black_cal
     black_cal = [get_reflectivity(c) for c in range(8)]
     update_data()
