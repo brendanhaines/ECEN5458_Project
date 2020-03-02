@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+ipykernel = "*"
 
 [packages]
 numpy = "*"
@@ -12,6 +13,7 @@ matplotlib = "*"
 scipy = "*"
 adafruit-circuitpython-servokit = "*"
 adafruit-circuitpython-ads1x15 = "*"
+adafruit-blinka = "*"
 
 [requires]
 python_version = "3.6"
