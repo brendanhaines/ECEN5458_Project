@@ -62,11 +62,13 @@ def update_data(attrname=None, old=None, new=None):
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
     white_cal = [get_reflectivity(c) for c in range(8)]
+    print(white_cal)
     update_data()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
     black_cal = [get_reflectivity(c) for c in range(8)]
+    print(black_cal)
     update_data()
 
 cal_white_button = Button(label="Cal White")
