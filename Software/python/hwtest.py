@@ -92,6 +92,7 @@ controls = column(cal_white_button, cal_black_button, update_button)
 
 curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
+curdoc().add_periodic_callback(update_plot, 500)
 
 def control_thread():
     global brightness
@@ -106,8 +107,8 @@ def control_thread():
         ii += 1
         if ii == 10:
             ii = 0
-        if ii == 0:
-            update_plot()
+        # if ii == 0:
+        #     update_plot()
 
 
 t = threading.Thread(target=control_thread)
