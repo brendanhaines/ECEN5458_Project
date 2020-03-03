@@ -66,7 +66,7 @@ brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
 time_plot = figure(plot_height=400, plot_width=800, title="Signals", y_range=[-3.5, 3.5])
-time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6)
+time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
 
 def update_plots(attrname=None, old=None, new=None):
     global brightness
