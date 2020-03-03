@@ -94,7 +94,7 @@ cal_black_button.on_click(cal_black)
 
 controls = column(cal_white_button, cal_black_button)
 
-curdoc().add_root(row(controls, plot, width=800))
+curdoc().add_root(row(controls, brightness_plot, time_plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
 curdoc().add_periodic_callback(update_plots, 250)
 
