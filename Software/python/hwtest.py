@@ -40,12 +40,12 @@ servos[2].throttle = 0
 # Initialize calibration
 try:
     white_cal = np.loadtxt('cal_white.txt')
-except FileNotFoundError:
+except IOError:
     white_cal = [0]*8
 
 try:
     black_cal = np.loadtxt('cal_black.txt')
-except FileNotFoundError:
+except IOError:
     black_cal = [5]*8
 
 def get_reflectivity(chan):
