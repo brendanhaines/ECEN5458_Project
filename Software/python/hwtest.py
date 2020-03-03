@@ -118,7 +118,7 @@ def control_thread():
     sample_interval = 0.01
     base_speed = 0.1
     fir_taps = [1, 1, 0]
-    iir_taps = [0.1, 0]
+    iir_taps = [0.99, 0]
     time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
 
     while True:
