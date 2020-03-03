@@ -42,13 +42,6 @@ servos[2].throttle = 0
 white_cal = [0]*8
 black_cal = [5]*8
 
-# Initialize Brightness
-brightness_idx = np.arange(8)
-brightness = [get_normalized_reflectivity(c) for c in range(8)]
-
-# Initialize Log
-time_data = np.empty((0, 3)) # [[t, e, c]]
-
 def get_reflectivity(chan):
     global mux_io
     global adc_mux
@@ -66,6 +59,13 @@ def get_normalized_reflectivity(chan):
     global white_cal
     global black_cal
     return (get_reflectivity(chan) - black_cal[chan]) / (white_cal[chan] - black_cal[chan])
+
+# Initialize brightness data
+brightness_idx = np.arange(8)
+brightness = [get_normalized_reflectivity(c) for c in range(8)]
+
+# Initialize time data
+time_data = np.empty((0, 3)) # [[t, e, c]]
 
 # Create sources for plots
 brightness_plot_source = ColumnDataSource(data=dict(sensor=brightness_idx, brightness=brightness))
