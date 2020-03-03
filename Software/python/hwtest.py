@@ -115,8 +115,8 @@ def control_thread():
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
         # TODO: implement control stuff and drive outputs
 
-        t = np.concatenate((t, this_time))
-        error = np.concatenate((error, line_position))
+        t = np.append(t, this_time)
+        error = np.append(error, line_position)
 
         if DEBUG:
             for b in brightness:
