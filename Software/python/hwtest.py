@@ -121,21 +121,15 @@ def control_thread():
     fir_taps = [1, -1, 0]
     iir_taps = [0, 0]
     time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
+    motor_directions = [-1, 1, 0]
+    steering_sign = 1
+
+    # Precompute
+    this_time = 0
+    new_c = 0
+    motor_speed = np.array(motor_directions) * base_speed
 
     while True:
-        # TODO: replace sleep statement with something that doesn't depend on execution time of loop
-        time.sleep(sample_interval)
-        if time_data.shape[0] == 0:
-            this_time = 0
-        else: 
-            this_time = time_data[-1, 0] + sample_interval
-
-        # Precompute as much as possible
-        c = time_data[:,2]
-        e = time_data[:,1]
-        new_c = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * c[-len(iir_taps):])
-        motor_speed = np.array([-1, 1, 0]) * base_speed
-        
         # Read error
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5)) / np.sum(1-brightness) / 3.5
@@ -144,7 +138,7 @@ def control_thread():
 
         # Calculate output
         new_c += fir_taps[0] * line_position
-        motor_speed += new_c
+        motor_speed += steering_sign * new_c
 
         # Update motors
         # for ii in range(3):
@@ -160,6 +154,16 @@ def control_thread():
                 print(f"{b:1.2f}\t", end="")
             print(f"{line_position:+1.2f}", end="")
             print()
+
+        # Precompute for next iteration
+        this_time = time_data[-1, 0] + sample_interval
+        c = time_data[:,2]
+        e = time_data[:,1]
+        new_c = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * c[-len(iir_taps):])
+        motor_speed = np.array(motor_directions) * base_speed
+
+        # TODO: replace sleep statement with something that doesn't depend on execution time of loop
+        time.sleep(sample_interval)
 
 
 # Start controller
