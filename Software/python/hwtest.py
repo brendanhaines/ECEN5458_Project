@@ -17,10 +17,10 @@ from bokeh.plotting import figure
 DEBUG = True
 
 mux_io = [None] * 4
-mux_io[0] = digitalio.DigitalInOut(board.D17)
-mux_io[1] = digitalio.DigitalInOut(board.D27)
-mux_io[2] = digitalio.DigitalInOut(board.D22)
-mux_io[3] = digitalio.DigitalInOut(board.D23)
+mux_io[0] = digitalio.DigitalInOut(board.D23)
+mux_io[1] = digitalio.DigitalInOut(board.D22)
+mux_io[2] = digitalio.DigitalInOut(board.D27)
+mux_io[3] = digitalio.DigitalInOut(board.D17)
 
 for ii, io in enumerate(mux_io):
     io.switch_to_output()
@@ -92,7 +92,7 @@ controls = column(cal_white_button, cal_black_button, update_button)
 
 curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
-curdoc().add_periodic_callback(update_plot, 500)
+curdoc().add_periodic_callback(update_plot, 250)
 
 def control_thread():
     global brightness
@@ -107,15 +107,10 @@ def control_thread():
         ii += 1
         if ii == 10:
             ii = 0
-        # if ii == 0:
-        #     update_plot()
 
 
 t = threading.Thread(target=control_thread)
 t.start()
-# while True:
-#     time.sleep(0.1)
-#     update_data()
 
 
 # servos = ServoKit(channels=16).continuous_servo
