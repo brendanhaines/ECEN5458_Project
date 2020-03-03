@@ -132,7 +132,7 @@ def control_thread():
         # Precompute as much as possible
         c = time_data[:,2]
         e = time_data[:,1]
-        np.append(c, fir_taps[1:] * e[-len(fir_taps)+1:] + iir_taps * c[-len(iir_taps):])
+        new_c = fir_taps[1:] * e[-len(fir_taps)+1:] + iir_taps * c[-len(iir_taps):]
         motor_speed = np.array([-1, 1, 0]) * base_speed
         
         # Read error
@@ -142,15 +142,15 @@ def control_thread():
             line_position = 0
 
         # Calculate output
-        c[-1] += fir_taps[0] * line_position
-        motor_speed += c[-1]
+        new_c += fir_taps[0] * line_position
+        motor_speed += new_c
 
         # Update motors
         # for ii in range(3):
         #     servos[ii].throttle = motor_speed[ii]
 
         # Log data
-        new_time_data = [[this_time, line_position]]
+        new_time_data = [[this_time, line_position, new_c]]
         time_data = np.concatenate((time_data, new_time_data))
 
         # Print data
