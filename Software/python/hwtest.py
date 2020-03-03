@@ -110,6 +110,8 @@ def control_thread():
 
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
+        if np.isnan(line_position):
+            line_position = 0
         # TODO: implement control stuff and drive outputs
 
         new_time_data = [[this_time, line_position]]
