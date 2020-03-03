@@ -102,7 +102,7 @@ def controller():
     fir_taps = [1, 0, 0]
     iir_taps = [0, 0]
     time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
-    motor_directions = [-1, 1, 0]
+    motor_directions = [1, -1, 0]
     steering_sign = 1
 
     print("INFO: Controller started")
