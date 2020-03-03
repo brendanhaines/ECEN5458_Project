@@ -70,10 +70,10 @@ time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6)
 
 def update_plots(attrname=None, old=None, new=None):
     global brightness
-    global error
+    global time_data
     global brightness_plot_source
     brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
-    time_plot_source.data = dict(t=t, e=error)
+    time_plot_source.data = dict(t=time_data[:,0], e=time_data[:,1])
 
 
 def cal_white(attrname=None, old=None, new=None):
