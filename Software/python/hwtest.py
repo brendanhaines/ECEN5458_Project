@@ -139,7 +139,7 @@ def controller():
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
 
-control_thread = threading.Thread(target=controller)
+control_thread = None
 
 # Callback functions
 def update_plots(attrname=None, old=None, new=None):
@@ -163,13 +163,18 @@ def start_controller(attrname=None, old=None, new=None):
     global control_thread
     global control_thread_run
     control_thread_run = True
+    control_thread = threading.Thread(target=controller)
     control_thread.start()
 
 def stop_controller(attrname=None, old=None, new=None):
     global control_thread
     global control_thread_run
-    control_thread_run = False
-    control_thread.join()
+    try:
+        control_thread_run = False
+        control_thread.join()
+        control_thread = None
+    except:
+        pass
 
 # GUI elements
 cal_white_button = Button(label="Cal White")
