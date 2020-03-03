@@ -95,6 +95,7 @@ def controller():
     global servos
     global control_thread_run
 
+
     # TODO: make these parameters editable via network interface
     sample_interval = 0.01
     base_speed = 0.1
@@ -104,6 +105,8 @@ def controller():
     motor_directions = [-1, 1, 0]
     steering_sign = 1
 
+    print("INFO: Controller started")
+    
     # Precompute
     this_time = 0
     new_c = 0
@@ -144,6 +147,8 @@ def controller():
 
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
+    
+    print("INFO: Controller stopped")
 
 control_thread = None
 
