@@ -144,8 +144,8 @@ def control_thread():
         motor_speed += c[-1]
 
         # Update motors
-        for ii in range(3):
-            servos[ii].throttle = motor_speed[ii]
+        # for ii in range(3):
+        #     servos[ii].throttle = motor_speed[ii]
 
         # Log data
         new_time_data = [[this_time, line_position]]
