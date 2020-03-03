@@ -80,40 +80,14 @@ time_plot = figure(plot_height=400, plot_width=800, y_range=[-1, 1])
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
 time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = "green")
 
-# Callback functions
-def update_plots(attrname=None, old=None, new=None):
-    global brightness
-    global time_data
-    global brightness_plot_source
-    brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
-    time_plot_source.data = dict(t=time_data[:,0], e=time_data[:,1], c=time_data[:,2])
+# Controller thread
+controller_thread_run = False
 
-def cal_white(attrname=None, old=None, new=None):
-    global white_cal
-    white_cal = [get_reflectivity(c) for c in range(8)]
-    update_plots()
-
-def cal_black(attrname=None, old=None, new=None):
-    global black_cal
-    black_cal = [get_reflectivity(c) for c in range(8)]
-    update_plots()
-
-# GUI elements
-cal_white_button = Button(label="Cal White")
-cal_white_button.on_click(cal_white)
-cal_black_button = Button(label="Cal Black")
-cal_black_button.on_click(cal_black)
-
-controls = column(cal_white_button, cal_black_button)
-curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))
-curdoc().title = "TriangleBot Control Panel"
-curdoc().add_periodic_callback(update_plots, 250)
-
-# Controller
 def control_thread():
     global brightness
     global time_data
     global servos
+    global controller_thread_run
 
     # TODO: make these parameters editable via network interface
     sample_interval = 0.01
@@ -129,7 +103,7 @@ def control_thread():
     new_c = 0
     motor_speed = np.array(motor_directions) * base_speed
 
-    while True:
+    while controller_thread_run:
         # Read error
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5)) / np.sum(1-brightness) / 3.5
@@ -165,9 +139,48 @@ def control_thread():
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
 
+control_thread = threading.Thread(target=control_thread)
 
-# Start controller
-# TODO: add start/stop/reset capability to GUI
-# control_thread = threading.Thread(target=control_thread)
-# control_thread.start()
-control_thread()
+# Callback functions
+def update_plots(attrname=None, old=None, new=None):
+    global brightness
+    global time_data
+    global brightness_plot_source
+    brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
+    time_plot_source.data = dict(t=time_data[:,0], e=time_data[:,1], c=time_data[:,2])
+
+def cal_white(attrname=None, old=None, new=None):
+    global white_cal
+    white_cal = [get_reflectivity(c) for c in range(8)]
+    update_plots()
+
+def cal_black(attrname=None, old=None, new=None):
+    global black_cal
+    black_cal = [get_reflectivity(c) for c in range(8)]
+    update_plots()
+
+def start_controller(attrname=None, old=None, new=None):
+    global controller_thread
+    controller_thread_run = True
+    controller_thread.start()
+
+def stop_controller(attrname=None, old=None, new=None):
+    global controller_thread
+    controller_thread_run = False
+    controller_thread.join()
+
+# GUI elements
+cal_white_button = Button(label="Cal White")
+cal_white_button.on_click(cal_white)
+cal_black_button = Button(label="Cal Black")
+cal_black_button.on_click(cal_black)
+
+start_button = Button(label="Start")
+start_button.on_click(start_controller)
+stop_button = Button(label="Stop")
+stop_button.on_click(stop_controller)
+
+controls = column(cal_white_button, cal_black_button, start_button, stop_button)
+curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))
+curdoc().title = "TriangleBot Control Panel"
+curdoc().add_periodic_callback(update_plots, 250)
