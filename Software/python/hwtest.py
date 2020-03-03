@@ -95,17 +95,15 @@ curdoc().add_periodic_callback(update_plot, 250)
 
 def control_thread():
     global brightness
-    ii = 0
     while True:
         time.sleep(0.01)
-        brightness = [get_normalized_reflectivity(c) for c in range(8)]
+        brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
+        line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
         if DEBUG:
             for b in brightness:
                 print(f"{b:1.2f}\t", end="")
+            print(f"{line_position:+1.2f}", end="")
             print()
-        ii += 1
-        if ii == 10:
-            ii = 0
 
 
 t = threading.Thread(target=control_thread)
