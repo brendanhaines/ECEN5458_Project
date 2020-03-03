@@ -118,7 +118,7 @@ def control_thread():
     sample_interval = 0.01
     base_speed = 0.1
     fir_taps = [1, 1, 0]
-    iir_taps = [0, 0]
+    iir_taps = [0.1, 0]
     time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
 
     while True:
@@ -132,7 +132,7 @@ def control_thread():
         # Precompute as much as possible
         c = time_data[:,2]
         e = time_data[:,1]
-        new_c = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) + np.sum(iir_taps * c[-len(iir_taps):])
+        new_c = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * c[-len(iir_taps):])
         motor_speed = np.array([-1, 1, 0]) * base_speed
         
         # Read error
