@@ -125,8 +125,8 @@ def control_thread():
             print()
 
 
-t = threading.Thread(target=control_thread)
-t.start()
+control_thread = threading.Thread(target=control_thread)
+control_thread.start()
 
 
 # servos = ServoKit(channels=16).continuous_servo
