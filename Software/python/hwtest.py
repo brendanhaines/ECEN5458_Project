@@ -142,7 +142,7 @@ def control_thread():
             line_position = 0
 
         # Calculate output
-        new_c += fir_taps[0] * error
+        new_c += fir_taps[0] * line_position
         motor_speed += new_c
 
         # Update motors
