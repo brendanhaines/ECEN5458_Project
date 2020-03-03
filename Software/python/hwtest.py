@@ -119,6 +119,7 @@ def control_thread():
     base_speed = 0.1
     fir_taps = [0, 0, 0]
     iir_taps = [0, 0]
+    time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
 
     while True:
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
