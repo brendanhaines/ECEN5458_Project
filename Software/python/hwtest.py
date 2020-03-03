@@ -61,11 +61,11 @@ brightness_plot_source = ColumnDataSource(data=dict(sensor=brightness_idx, brigh
 time_plot_source = ColumnDataSource(data=dict(t=time_data[:,0], e=time_data[:,1]))
 
 # Set up plots
-brightness_plot = figure(plot_height=150, plot_width=400, title="Reflectivity", x_range=[0, 7], y_range=[0, 1])
+brightness_plot = figure(plot_height=150, plot_width=400, x_range=[0, 7], y_range=[0, 1])
 brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line_width=3)
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
-time_plot = figure(plot_height=400, plot_width=800, title="Signals", y_range=[-3.5, 3.5])
+time_plot = figure(plot_height=400, plot_width=800, y_range=[-3.5, 3.5])
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
 
 def update_plots(attrname=None, old=None, new=None):
