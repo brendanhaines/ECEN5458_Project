@@ -160,14 +160,14 @@ def cal_black(attrname=None, old=None, new=None):
     update_plots()
 
 def start_controller(attrname=None, old=None, new=None):
-    global controller_thread
-    controller_thread_run = True
-    controller_thread.start()
+    global control_thread
+    control_thread_run = True
+    control_thread.start()
 
 def stop_controller(attrname=None, old=None, new=None):
-    global controller_thread
-    controller_thread_run = False
-    controller_thread.join()
+    global control_thread
+    control_thread_run = False
+    control_thread.join()
 
 # GUI elements
 cal_white_button = Button(label="Cal White")
