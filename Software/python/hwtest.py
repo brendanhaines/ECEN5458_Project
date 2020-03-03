@@ -113,7 +113,7 @@ def control_thread():
         # TODO: implement control stuff and drive outputs
 
         new_time_data = [this_time, line_position]
-        time_data = np.concatenate((time_data, new_time_data)
+        time_data = np.concatenate((time_data, new_time_data))
 
         if DEBUG:
             for b in brightness:
