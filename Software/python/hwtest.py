@@ -168,5 +168,6 @@ def control_thread():
 
 # Start controller
 # TODO: add start/stop/reset capability to GUI
-control_thread = threading.Thread(target=control_thread)
-control_thread.start()
+# control_thread = threading.Thread(target=control_thread)
+# control_thread.start()
+control_thread()
