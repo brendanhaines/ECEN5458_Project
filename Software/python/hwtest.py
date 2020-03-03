@@ -85,10 +85,8 @@ cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
 cal_black_button = Button(label="Cal Black")
 cal_black_button.on_click(cal_black)
-update_button = Button(label="Update Plot")
-update_button.on_click(update_plot)
 
-controls = column(cal_white_button, cal_black_button, update_button)
+controls = column(cal_white_button, cal_black_button)
 
 curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
