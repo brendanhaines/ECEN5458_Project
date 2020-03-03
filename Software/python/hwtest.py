@@ -164,6 +164,7 @@ def start_controller(attrname=None, old=None, new=None):
     global control_thread_run
     control_thread_run = True
     control_thread = threading.Thread(target=controller)
+    control_thread.daemon = True
     control_thread.start()
 
 def stop_controller(attrname=None, old=None, new=None):
