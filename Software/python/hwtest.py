@@ -148,6 +148,9 @@ def controller():
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
     
+    for ii in range(3):
+        servos[ii].throttle = 0
+        
     print("INFO: Controller stopped")
 
 control_thread = None
@@ -194,7 +197,6 @@ def stop_controller(attrname=None, old=None, new=None):
         control_thread = None
     except:
         pass
-    servos[ii].throttle = 0
 
 # GUI elements
 cal_white_button = Button(label="Cal White")
