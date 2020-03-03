@@ -66,7 +66,7 @@ brightness_plot = figure(plot_height=150, plot_width=400, title="Reflectivity", 
 brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line_width=3)
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
-time_plot = figure(plot_height=400, plot_width=400, title="Signals")
+time_plot = figure(plot_height=400, plot_width=1000, title="Signals", y_range=[-3.5, 3.5])
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6)
 
 def update_plots(attrname=None, old=None, new=None):
@@ -93,8 +93,7 @@ cal_black_button = Button(label="Cal Black")
 cal_black_button.on_click(cal_black)
 
 controls = column(cal_white_button, cal_black_button)
-
-curdoc().add_root(row(controls, brightness_plot, time_plot, width=800))
+curdoc().add_root(column(row(controls, brightness_plot), time_plot))
 curdoc().title = "TriangleBot Control Panel"
 curdoc().add_periodic_callback(update_plots, 250)
 
