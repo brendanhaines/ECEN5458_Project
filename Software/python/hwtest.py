@@ -103,10 +103,10 @@ def control_thread():
     while True:
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
-        if len(t) == 0:
+        if time_data.shape[0] == 0:
             this_time = 0
         else: 
-            this_time = t[-1] + sample_interval
+            this_time = t[-1, 0] + sample_interval
 
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
