@@ -55,32 +55,37 @@ def get_normalized_reflectivity(chan):
 
 brightness_idx = np.arange(8)
 brightness = [get_normalized_reflectivity(c) for c in range(8)]
+t = np.array([])
+error = np.array([])
 
-plt_data = dict(x=brightness_idx, y=brightness)
-plt_source = ColumnDataSource(data=plt_data)
+brightness_plot_source = ColumnDataSource(data=dict(sensor=brightness_idx, brightness=brightness))
+time_plot_source = ColumnDataSource(data=dict(t=t, e=error))
 
-# Set up plot
-plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
-            x_range=[0, 7], y_range=[0, 1])
+# Set up plots
+brightness_plot = figure(plot_height=150, plot_width=400, title="Reflectivity", x_range=[0, 7], y_range=[0, 1])
+brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line_width=3)
+brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
-plot.line('x', 'y', source=plt_source, line_width=3)
-plot.circle('x', 'y', source=plt_source, size=8, fill_color="white", line_width=2)
+time_plot = figure(plot_height=400, plot_width=400, title="Signals")
+time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6)
 
-def update_plot(attrname=None, old=None, new=None):
+def update_plots(attrname=None, old=None, new=None):
     global brightness
-    global plt_data
-    plt_data = dict(x=brightness_idx, y=brightness)
-    plt_source.data = plt_data
+    global error
+    global brightness_plot_source
+    brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
+    time_plot_source.data = dict(t=t, e=error)
+
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
     white_cal = [get_reflectivity(c) for c in range(8)]
-    update_plot()
+    update_plots()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
     black_cal = [get_reflectivity(c) for c in range(8)]
-    update_plot()
+    update_plots()
 
 cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
@@ -91,14 +96,28 @@ controls = column(cal_white_button, cal_black_button)
 
 curdoc().add_root(row(controls, plot, width=800))
 curdoc().title = "TriangleBot Control Panel"
-curdoc().add_periodic_callback(update_plot, 250)
+curdoc().add_periodic_callback(update_plots, 250)
 
 def control_thread():
     global brightness
+    global t
+    global error
+    sample_interval = 0.01
     while True:
-        time.sleep(0.01)
+        # TODO: replace sleep statement with something that doesn't depend on execution time of loop
+        time.sleep(sample_interval)
+        if len(time) == 0:
+            this_time = 0
+        else: 
+            this_time = t[-1] + sample_interval
+
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
+        # TODO: implement control stuff and drive outputs
+
+        t = np.concatenate((t, this_time))
+        error = np.concatenate((error, line_position))
+
         if DEBUG:
             for b in brightness:
                 print(f"{b:1.2f}\t", end="")
