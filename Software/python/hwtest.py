@@ -133,7 +133,7 @@ def control_thread():
         c = time_data[:,2]
         e = time_data[:,1]
         np.append(c, fir_taps[1:] * e[-len(fir_taps)+1:] + iir_taps * c[-len(iir_taps):])
-        motor_speed = np.array(-1, 1, 0) * base_speed
+        motor_speed = np.array([-1, 1, 0]) * base_speed
         
         # Read error
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
