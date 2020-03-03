@@ -14,7 +14,7 @@ from bokeh.layouts import column, row
 from bokeh.models import ColumnDataSource, Slider, TextInput, Button
 from bokeh.plotting import figure
 
-DEBUG = True
+DEBUG = False
 
 # Configure MUX for ADC
 mux_io = [None] * 4
