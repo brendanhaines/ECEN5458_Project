@@ -117,7 +117,7 @@ def control_thread():
 
     sample_interval = 0.01
     base_speed = 0.1
-    fir_taps = [1, 0, 0]
+    fir_taps = [1, 1, 0]
     iir_taps = [0, 0]
     time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
 
@@ -142,7 +142,7 @@ def control_thread():
             line_position = 0
 
         # Calculate output
-        new_c += fir_taps[0] * line_position
+        new_c += fir_taps[0] * error
         motor_speed += new_c
 
         # Update motors
