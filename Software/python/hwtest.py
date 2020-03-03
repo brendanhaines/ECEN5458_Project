@@ -81,9 +81,9 @@ time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, 
 time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = "green")
 
 # Controller thread
-controller_thread_run = False
+control_thread_run = False
 
-def control_thread():
+def controller():
     global brightness
     global time_data
     global servos
@@ -139,7 +139,7 @@ def control_thread():
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
 
-control_thread = threading.Thread(target=control_thread)
+control_thread = threading.Thread(target=controller)
 
 # Callback functions
 def update_plots(attrname=None, old=None, new=None):
@@ -161,11 +161,13 @@ def cal_black(attrname=None, old=None, new=None):
 
 def start_controller(attrname=None, old=None, new=None):
     global control_thread
+    global control_thread_run
     control_thread_run = True
     control_thread.start()
 
 def stop_controller(attrname=None, old=None, new=None):
     global control_thread
+    global control_thread_run
     control_thread_run = False
     control_thread.join()
 
