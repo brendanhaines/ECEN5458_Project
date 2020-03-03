@@ -87,7 +87,7 @@ def controller():
     global brightness
     global time_data
     global servos
-    global controller_thread_run
+    global control_thread_run
 
     # TODO: make these parameters editable via network interface
     sample_interval = 0.01
@@ -103,7 +103,7 @@ def controller():
     new_c = 0
     motor_speed = np.array(motor_directions) * base_speed
 
-    while controller_thread_run:
+    while control_thread_run:
         # Read error
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5)) / np.sum(1-brightness) / 3.5
