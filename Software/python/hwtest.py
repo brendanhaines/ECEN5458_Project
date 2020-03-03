@@ -106,13 +106,13 @@ def control_thread():
         if time_data.shape[0] == 0:
             this_time = 0
         else: 
-            this_time = t[-1, 0] + sample_interval
+            this_time = time_data[-1, 0] + sample_interval
 
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
         # TODO: implement control stuff and drive outputs
 
-        new_time_data = [this_time, line_position]
+        new_time_data = [[this_time, line_position]]
         time_data = np.concatenate((time_data, new_time_data))
 
         if DEBUG:
