@@ -55,18 +55,17 @@ def get_normalized_reflectivity(chan):
 
 brightness_idx = np.arange(8)
 brightness = [get_normalized_reflectivity(c) for c in range(8)]
-t = np.array([])
-error = np.array([])
+time_data = np.empty((0,2))
 
 brightness_plot_source = ColumnDataSource(data=dict(sensor=brightness_idx, brightness=brightness))
-time_plot_source = ColumnDataSource(data=dict(t=t, e=error))
+time_plot_source = ColumnDataSource(data=dict(t=time_data[:,0], e=time_data[:,1]))
 
 # Set up plots
 brightness_plot = figure(plot_height=150, plot_width=400, title="Reflectivity", x_range=[0, 7], y_range=[0, 1])
 brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line_width=3)
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
-time_plot = figure(plot_height=400, plot_width=1000, title="Signals", y_range=[-3.5, 3.5])
+time_plot = figure(plot_height=400, plot_width=800, title="Signals", y_range=[-3.5, 3.5])
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6)
 
 def update_plots(attrname=None, old=None, new=None):
@@ -93,14 +92,13 @@ cal_black_button = Button(label="Cal Black")
 cal_black_button.on_click(cal_black)
 
 controls = column(cal_white_button, cal_black_button)
-curdoc().add_root(column(row(controls, brightness_plot), time_plot))
+curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))
 curdoc().title = "TriangleBot Control Panel"
 curdoc().add_periodic_callback(update_plots, 250)
 
 def control_thread():
     global brightness
-    global t
-    global error
+    global time_data
     sample_interval = 0.01
     while True:
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
@@ -114,8 +112,8 @@ def control_thread():
         line_position = np.sum((1 - brightness) * (np.arange(8) - 3.5))/np.sum(1-brightness)
         # TODO: implement control stuff and drive outputs
 
-        t = np.append(t, this_time)
-        error = np.append(error, line_position)
+        new_time_data = [this_time, line_position]
+        time_data = np.concatenate((time_data, new_time_data)
 
         if DEBUG:
             for b in brightness:
