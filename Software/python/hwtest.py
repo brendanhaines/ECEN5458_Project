@@ -38,9 +38,15 @@ servos[1].throttle = 0
 servos[2].throttle = 0
 
 # Initialize calibration
-# TODO: save cal and load from file by default
-white_cal = [0]*8
-black_cal = [5]*8
+try:
+    white_cal = np.loadtxt('cal_white.txt')
+except FileNotFoundError:
+    white_cal = [0]*8
+
+try:
+    black_cal = np.loadtxt('cal_black.txt')
+except FileNotFoundError:
+    black_cal = [5]*8
 
 def get_reflectivity(chan):
     global mux_io
@@ -157,11 +163,13 @@ def update_plots(attrname=None, old=None, new=None):
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
     white_cal = [get_reflectivity(c) for c in range(8)]
+    np.savetxt('cal_white.txt', white_cal)
     update_plots()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
     black_cal = [get_reflectivity(c) for c in range(8)]
+    np.savetxt('cal_black.txt', black_cal)
     update_plots()
 
 def start_controller(attrname=None, old=None, new=None):
