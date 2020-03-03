@@ -77,8 +77,8 @@ brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
 time_plot = figure(plot_height=400, plot_width=800, y_range=[-1, 1])
-time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)", line_color = 'blue')
-time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = 'green')
+time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
+time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = "green")
 
 # Callback functions
 def update_plots(attrname=None, old=None, new=None):
