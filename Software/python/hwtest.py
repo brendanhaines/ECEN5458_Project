@@ -194,6 +194,7 @@ def stop_controller(attrname=None, old=None, new=None):
         control_thread = None
     except:
         pass
+    servos[ii].throttle = 0
 
 # GUI elements
 cal_white_button = Button(label="Cal White")
