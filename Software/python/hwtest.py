@@ -64,7 +64,7 @@ plot = figure(plot_height=400, plot_width=400, title="Reflectivity",
             x_range=[0, 7], y_range=[0, 1])
 
 plot.line('x', 'y', source=plt_source, line_width=3, line_alpha=0.6)
-plot.circle('x', 'y', source=plt_source, size=8, alpha=0.6)
+plot.circle('x', 'y', source=plt_source, size=8, fill_color="white", line_width=2, line_alpha=0.6)
 
 def update_plot(attrname=None, old=None, new=None):
     global brightness
