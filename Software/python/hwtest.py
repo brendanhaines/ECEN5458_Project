@@ -124,8 +124,8 @@ def controller():
         motor_speed += steering_sign * new_c
 
         # Update motors
-        # for ii in range(3):
-        #     servos[ii].throttle = motor_speed[ii]
+        for ii in range(3):
+            servos[ii].throttle = motor_speed[ii]
 
         # Log data
         new_time_data = [[this_time, line_position, new_c]]
