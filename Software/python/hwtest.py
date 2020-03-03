@@ -106,7 +106,7 @@ def control_thread():
     while True:
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
         time.sleep(sample_interval)
-        if len(time) == 0:
+        if len(t) == 0:
             this_time = 0
         else: 
             this_time = t[-1] + sample_interval
