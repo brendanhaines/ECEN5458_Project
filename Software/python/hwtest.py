@@ -82,7 +82,7 @@ brightness_plot = figure(plot_height=150, plot_width=400, x_range=[0, 7], y_rang
 brightness_plot.line('sensor', 'brightness', source=brightness_plot_source, line_width=3)
 brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, size=8, fill_color="white", line_width=2)
 
-time_plot = figure(plot_height=400, plot_width=800, y_range=[-1, 1], tools="crosshair,pan,reset,save,wheel_zoom")
+time_plot = figure(plot_height=400, plot_width=800, y_range=[-1, 1], tools="pan,reset,save,wheel_zoom")
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
 time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = "green")
 
@@ -106,7 +106,7 @@ def controller():
     steering_sign = 1
 
     print("INFO: Controller started")
-    
+
     # Precompute
     this_time = 0
     new_c = 0
