@@ -220,8 +220,8 @@ def update_battery_voltage(attrname=None, old=None, new=None):
     global VBAT_THRESHOLD
     global vbat_text
     vadc = get_mux_adc(BAT_MUX_CHAN)
-    vbat = vadc * (10+1)/1
-    # vbat = vadc * 12.21/1.68
+    # vbat = vadc * (10+1)/1
+    vbat = vadc * 12.21/1.022
     vbat_text.text = f"Battery Voltage: {vbat:2.1f}V"
     if vbat < VBAT_THRESHOLD:
         stop_controller()
