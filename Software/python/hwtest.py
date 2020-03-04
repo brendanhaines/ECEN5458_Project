@@ -8,13 +8,16 @@ from adafruit_servokit import ServoKit
 import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 import threading
+import os
 
 from bokeh.io import curdoc
 from bokeh.layouts import column, row
-from bokeh.models import ColumnDataSource, Slider, TextInput, Button
+from bokeh.models import ColumnDataSource, Slider, TextInput, Button, Paragraph
 from bokeh.plotting import figure
 
 DEBUG = False
+BAT_MUX_CHAN = 15
+VBAT_THRESHOLD = 11.0
 
 # Configure MUX for ADC
 mux_io = [None] * 4
@@ -48,7 +51,7 @@ try:
 except IOError:
     black_cal = [5]*8
 
-def get_reflectivity(chan):
+def get_mux_adc(chan):
     global mux_io
     global adc_mux
     global adc_lock
@@ -64,7 +67,7 @@ def get_reflectivity(chan):
 def get_normalized_reflectivity(chan):
     global white_cal
     global black_cal
-    return (get_reflectivity(chan) - black_cal[chan]) / (white_cal[chan] - black_cal[chan])
+    return (get_mux_adc(chan) - black_cal[chan]) / (white_cal[chan] - black_cal[chan])
 
 # Initialize brightness data
 brightness_idx = np.arange(8)
@@ -95,17 +98,18 @@ def controller():
     global servos
     global control_thread_run
 
-
     # TODO: make these parameters editable via network interface
     sample_interval = 0.01
     base_speed = 0.1
     fir_taps = [1, 0, 0]
     iir_taps = [0, 0]
-    time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
     motor_directions = [1, -1, 0]
     steering_sign = 1
 
     print("INFO: Controller started")
+
+    # Initialize
+    time_data = np.zeros((max(len(fir_taps), len(iir_taps)), time_data.shape[1]))
 
     # Precompute
     this_time = 0
@@ -150,7 +154,7 @@ def controller():
     
     for ii in range(3):
         servos[ii].throttle = 0
-        
+
     print("INFO: Controller stopped")
 
 control_thread = None
@@ -170,13 +174,13 @@ def update_plots(attrname=None, old=None, new=None):
 
 def cal_white(attrname=None, old=None, new=None):
     global white_cal
-    white_cal = [get_reflectivity(c) for c in range(8)]
+    white_cal = [get_mux_adc(c) for c in range(8)]
     np.savetxt('cal_white.txt', white_cal)
     update_plots()
 
 def cal_black(attrname=None, old=None, new=None):
     global black_cal
-    black_cal = [get_reflectivity(c) for c in range(8)]
+    black_cal = [get_mux_adc(c) for c in range(8)]
     np.savetxt('cal_black.txt', black_cal)
     update_plots()
 
@@ -198,7 +202,10 @@ def stop_controller(attrname=None, old=None, new=None):
     except:
         pass
 
+
 # GUI elements
+vbat_text = Paragraph(text="Battery Voltage: ? V")
+
 cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
 cal_black_button = Button(label="Cal Black")
@@ -209,7 +216,30 @@ start_button.on_click(start_controller)
 stop_button = Button(label="Stop")
 stop_button.on_click(stop_controller)
 
-controls = column(cal_white_button, cal_black_button, start_button, stop_button)
-curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))
+def update_battery_voltage(attrname=None, old=None, new=None):
+    global VBAT_THRESHOLD
+    global vbat_text
+    vadc = get_mux_adc(BAT_MUX_CHAN)
+    # vbat = vadc * (10+1)/1
+    vbat = vadc * 12.21/1.018
+    vbat_text.text = f"Battery Voltage: {vbat:2.1f}V"
+    if vbat < VBAT_THRESHOLD:
+        stop_controller()
+        print("ERROR: Battery Critically Low")
+        # os.system("sudo poweroff")
+
+# sample_interval = 0.01
+# base_speed = 0.1
+# fir_taps = [1, 0, 0]
+# iir_taps = [0, 0]
+# controller_sample_interval = TextInput(title="Sample Interval", value=str(sample_interval))
+# controller_base_speed = Slider(title="Base Speed", value=base_speed, start=0, end=0.8, step=0.01)
+# controller_fir_taps = TextInput(title="FIR taps", value=str(fir_taps))
+# controller_iir_taps = TextInput(title="IIR taps", value=str(iir_taps))
+
+controls = column(vbat_text, cal_white_button, cal_black_button, start_button, stop_button)
+# controller_settings = column(controller_sample_interval, controller_base_speed, controller_fir_taps, controller_iir_taps)
+curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))#, controller_settings))
 curdoc().title = "TriangleBot Control Panel"
 curdoc().add_periodic_callback(update_plots, 250)
+curdoc().add_periodic_callback(update_battery_voltage, 1000)
