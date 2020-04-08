@@ -154,7 +154,7 @@ def controller():
         this_time = time_data[-1, 0] + sample_interval
         u = time_data[:,2]
         e = time_data[:,1]
-        new_u = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * u[-len(iir_taps):])
+        new_u = np.sum(np.flip(fir_taps[1:]) * e[-len(fir_taps)+1:]) - np.sum(np.flip(iir_taps) * u[-len(iir_taps):])
         motor_speed = np.array(motor_directions) * base_speed
 
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
