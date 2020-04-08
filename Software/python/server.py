@@ -99,12 +99,19 @@ def controller():
     global time_data
     global servos
     global control_thread_run
+    global D    # controller model
 
     # TODO: make these parameters editable via network interface
-    sample_interval = 0.01
+    if D.dt is None:
+        sample_interval = 0.01
+    else:
+        sample_interval = D.dt
     base_speed = 0.1
-    fir_taps = [1, 0, 0]
-    iir_taps = [0, 0]
+    fir_taps = np.flip(D.num)
+    iir_taps = np.flip(D.num[1:])
+    # fir_taps = [1, 0, 0]
+    # iir_taps = [0, 0]
+
     motor_directions = [1, -1, 0]
     steering_sign = 1
 
@@ -231,6 +238,7 @@ stop_button.on_click(stop_controller)
 controller_model_text = TextInput(value="D = TransferFunction([1], [1], dt=0.01)")
 update_models_button = Button(label="Update models")
 update_models_button.on_click(update_models)
+update_models()
 
 def update_battery_voltage(attrname=None, old=None, new=None):
     global VBAT_THRESHOLD
