@@ -107,8 +107,8 @@ def controller():
     else:
         sample_interval = D.dt
     base_speed = 0.1
-    fir_taps = np.append(np.flip(D.num), 0)
-    iir_taps = np.append(np.flip(D.num[1:]), 0)
+    fir_taps = np.append(D.num, 0)
+    iir_taps = np.append(D.num[1:], 0)
     # fir_taps = [1, 0, 0]
     # iir_taps = [0, 0]
 
@@ -135,11 +135,10 @@ def controller():
         # Calculate output
         new_c += fir_taps[0] * line_position
         motor_speed += steering_sign * new_c
-        np.clip(motor_speed, -1, 1)
 
         # Update motors
         for ii in range(3):
-            servos[ii].throttle = motor_speed[ii]
+            servos[ii].throttle = np.clip(motor_speed[ii], -1, 1)
 
         # Log data
         new_time_data = [[this_time, line_position, new_c]]
