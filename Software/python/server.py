@@ -109,6 +109,8 @@ def controller():
     base_speed = 0.1
     fir_taps = np.flip(D.num)
     iir_taps = np.flip(D.num[1:])
+    if len(iir_taps) == 0:
+        iir_taps = [0]
     # fir_taps = [1, 0, 0]
     # iir_taps = [0, 0]
 
