@@ -201,10 +201,13 @@ def cal_black(attrname=None, old=None, new=None):
 def start_controller(attrname=None, old=None, new=None):
     global control_thread
     global control_thread_run
-    control_thread_run = True
-    control_thread = threading.Thread(target=controller)
-    control_thread.daemon = True
-    control_thread.start()
+    if control_thread_run:
+        print("ERROR: controller already running")
+    else:
+        control_thread_run = True
+        control_thread = threading.Thread(target=controller)
+        control_thread.daemon = True
+        control_thread.start()
 
 def stop_controller(attrname=None, old=None, new=None):
     global control_thread
