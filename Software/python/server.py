@@ -202,6 +202,11 @@ def stop_controller(attrname=None, old=None, new=None):
     except:
         pass
 
+def update_models(attrname=None, old=None, new=None):
+    if new is not None:
+        stop_controller()
+        exec(new)
+
 
 # GUI elements
 vbat_text = Paragraph(text="Battery Voltage: ? V")
@@ -215,6 +220,11 @@ start_button = Button(label="Start")
 start_button.on_click(start_controller)
 stop_button = Button(label="Stop")
 stop_button.on_click(stop_controller)
+
+# plant_model_text = 
+controller_model_text = TextInput(text="D = TransferFunction([1], [1], dt=0.01)")
+update_models = Button(label="Update models")
+update_models.on_click(update_models)
 
 def update_battery_voltage(attrname=None, old=None, new=None):
     global VBAT_THRESHOLD
@@ -238,8 +248,9 @@ def update_battery_voltage(attrname=None, old=None, new=None):
 # controller_iir_taps = TextInput(title="IIR taps", value=str(iir_taps))
 
 controls = column(vbat_text, cal_white_button, cal_black_button, start_button, stop_button)
+controller_model = row(controller_model_text, update_models)
 # controller_settings = column(controller_sample_interval, controller_base_speed, controller_fir_taps, controller_iir_taps)
-curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot))#, controller_settings))
+curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot, controller_model))#, controller_settings))
 curdoc().title = "TriangleBot Control Panel"
 curdoc().add_periodic_callback(update_plots, 250)
 curdoc().add_periodic_callback(update_battery_voltage, 1000)
