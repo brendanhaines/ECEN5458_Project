@@ -204,11 +204,12 @@ def stop_controller(attrname=None, old=None, new=None):
 
 def update_models(attrname=None, old=None, new=None):
     stop_controller()
-    print(attrname)
-    print(old)
-    print(new)
-    if new is not None:
-        exec(new)
+    try:
+        exec(controller_model_text.value)
+        print("INFO: controller model updated")
+        print(D)
+    except:
+        print("WARN: invalid controller model")
 
 
 # GUI elements
