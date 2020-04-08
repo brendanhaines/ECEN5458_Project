@@ -251,11 +251,13 @@ def update_battery_voltage(attrname=None, old=None, new=None):
     vadc = get_mux_adc(BAT_MUX_CHAN)
     # vbat = vadc * (10+1)/1
     vbat = vadc * 12.21/1.022
-    vbat_text.text = f"Battery Voltage: {vbat:2.1f}V"
     if vbat < VBAT_THRESHOLD:
+                vbat_text.text = f'<div style="background-color:red;color:white;padding:2%;">Battery Voltage: <b>{vbat:2.1f}V</b></div>'
         stop_controller()
-        print("ERROR: Battery Critically Low")
-        # os.system("sudo poweroff")
+        print("WARN: Battery Critically Low")
+    else:
+        vbat_text.text = f"Battery Voltage: {vbat:2.1f}V"
+
 
 # sample_interval = 0.01
 # base_speed = 0.1
