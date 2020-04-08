@@ -203,8 +203,11 @@ def stop_controller(attrname=None, old=None, new=None):
         pass
 
 def update_models(attrname=None, old=None, new=None):
+    stop_controller()
+    print(attrname)
+    print(old)
+    print(new)
     if new is not None:
-        stop_controller()
         exec(new)
 
 
