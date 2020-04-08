@@ -76,11 +76,11 @@ brightness_idx = np.arange(8)
 brightness = [get_normalized_reflectivity(c) for c in range(8)]
 
 # Initialize time data
-time_data = np.empty((0, 3)) # [[t, e, c]]
+time_data = np.empty((0, 3)) # [[t, e, u]]
 
 # Create sources for plots
 brightness_plot_source = ColumnDataSource(data=dict(sensor=brightness_idx, brightness=brightness))
-time_plot_source = ColumnDataSource(data=dict(t=time_data[:,0], e=time_data[:,1], c=time_data[:,2]))
+time_plot_source = ColumnDataSource(data=dict(t=time_data[:,0], e=time_data[:,1], u=time_data[:,2]))
 
 # Set up plots
 brightness_plot = figure(plot_height=150, plot_width=400, x_range=[0, 7], y_range=[0, 1], tools="save")
@@ -89,7 +89,7 @@ brightness_plot.circle('sensor', 'brightness', source=brightness_plot_source, si
 
 time_plot = figure(plot_height=400, plot_width=800, y_range=[-1, 1], tools="pan,reset,save,wheel_zoom")
 time_plot.line('t', 'e', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="e(t)")
-time_plot.line('t', 'c', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="c(t)", line_color = "green")
+time_plot.line('t', 'u', source=time_plot_source, line_width=3, line_alpha=0.6, legend_label="u(t)", line_color = "green")
 
 # Controller thread
 control_thread_run = False
@@ -122,7 +122,7 @@ def controller():
 
     # Precompute
     this_time = 0
-    new_c = 0
+    new_u = 0
     motor_speed = np.array(motor_directions) * base_speed
 
     while control_thread_run:
@@ -133,15 +133,15 @@ def controller():
             line_position = 0
 
         # Calculate output
-        new_c += fir_taps[0] * line_position
-        motor_speed += steering_sign * new_c
+        new_u += fir_taps[0] * line_position
+        motor_speed += steering_sign * new_u
 
         # Update motors
         for ii in range(3):
             servos[ii].throttle = np.clip(motor_speed[ii], -1, 1)
 
         # Log data
-        new_time_data = [[this_time, line_position, new_c]]
+        new_time_data = [[this_time, line_position, new_u]]
         time_data = np.concatenate((time_data, new_time_data))
 
         # Print data
@@ -153,9 +153,9 @@ def controller():
 
         # Precompute for next iteration
         this_time = time_data[-1, 0] + sample_interval
-        c = time_data[:,2]
+        u = time_data[:,2]
         e = time_data[:,1]
-        new_c = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * c[-len(iir_taps):])
+        new_u = np.sum(fir_taps[1:] * e[-len(fir_taps)+1:]) - np.sum(iir_taps * u[-len(iir_taps):])
         motor_speed = np.array(motor_directions) * base_speed
 
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
