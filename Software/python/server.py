@@ -14,7 +14,7 @@ import os
 
 from bokeh.io import curdoc
 from bokeh.layouts import column, row
-from bokeh.models import ColumnDataSource, Slider, TextInput, Button, Paragraph
+from bokeh.models import ColumnDataSource, Slider, TextInput, Button, Paragraph, Div
 from bokeh.plotting import figure
 
 DEBUG = False
@@ -227,7 +227,7 @@ def update_models(attrname=None, old=None, new=None):
 
 
 # GUI elements
-vbat_text = Paragraph(text="Battery Voltage: ? V")
+vbat_text = Div(text="Battery Voltage: ? V")
 
 cal_white_button = Button(label="Cal White")
 cal_white_button.on_click(cal_white)
