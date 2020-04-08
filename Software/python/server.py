@@ -109,12 +109,7 @@ def controller():
     base_speed = 0.1
     iir_taps = np.append(D.num[1:], 0)
     fir_taps = np.append(D.num, 0)
-    fir_taps = np.concatenate([np.zeros(len(iir_taps)-len(fir_taps) + 1), fir_taps])
-
-    iir_taps = np.flip(iir_taps)
-    fir_taps = np.flip(fir_taps)
-    # fir_taps = [1, 0, 0]
-    # iir_taps = [0, 0]
+    fir_taps = np.concatenate([np.zeros((len(iir_taps) + 1) - len(fir_taps)), fir_taps])
 
     motor_directions = [1, -1, 0]
     steering_sign = 1
