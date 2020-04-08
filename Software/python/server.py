@@ -107,8 +107,9 @@ def controller():
     else:
         sample_interval = D.dt
     base_speed = 0.1
-    fir_taps = np.append(D.num, 0)
     iir_taps = np.append(D.num[1:], 0)
+    fir_taps = np.append(D.num, 0)
+    fir_taps = np.concatenate([np.zeros(len(iir_taps)-len(fir_taps) + 1), fir_taps])
     # fir_taps = [1, 0, 0]
     # iir_taps = [0, 0]
 
