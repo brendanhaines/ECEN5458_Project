@@ -135,6 +135,7 @@ def controller():
         # Calculate output
         new_c += fir_taps[0] * line_position
         motor_speed += steering_sign * new_c
+        np.clip(motor_speed, -1, 1)
 
         # Update motors
         for ii in range(3):
