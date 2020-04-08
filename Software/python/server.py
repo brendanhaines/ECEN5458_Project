@@ -176,7 +176,7 @@ def update_plots(attrname=None, old=None, new=None):
     global control_thread_run
     if control_thread_run:
         brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
-        time_plot_source.data = dict(t=time_data[:,0], e=time_data[:,1], c=time_data[:,2])
+        time_plot_source.data = dict(t=time_data[:,0], e=time_data[:,1], u=time_data[:,2])
     else:
         brightness = np.clip([get_normalized_reflectivity(c) for c in range(8)], 0, 1)
         brightness_plot_source.data = dict(sensor=brightness_idx, brightness=brightness)
