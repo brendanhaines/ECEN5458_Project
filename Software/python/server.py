@@ -111,6 +111,12 @@ def controller():
     fir_taps = np.append(D.num, 0)
     fir_taps = np.concatenate([np.zeros((len(iir_taps) + 1) - len(fir_taps)), fir_taps])
 
+    # index 0 is oldest sample
+    iir_taps = np.flip(iir_taps)
+    fir_taps = np.flip(fir_taps)
+    print(iir_taps)
+    print(fir_taps)
+
     motor_directions = [1, -1, 0]
     steering_sign = 1
 
@@ -132,7 +138,7 @@ def controller():
             line_position = 0
 
         # Calculate output
-        new_u += fir_taps[0] * line_position
+        new_u += fir_taps[-1] * line_position
         motor_speed += steering_sign * new_u
 
         # Update motors
@@ -154,7 +160,7 @@ def controller():
         this_time = time_data[-1, 0] + sample_interval
         u = time_data[:,2]
         e = time_data[:,1]
-        new_u = np.sum(np.flip(fir_taps[1:]) * e[-len(fir_taps)+1:]) - np.sum(np.flip(iir_taps) * u[-len(iir_taps):])
+        new_u = np.sum(fir_taps[:-1] * e[-(len(fir_taps)-1):]) - np.sum(iir_taps * u[-len(iir_taps):])
         motor_speed = np.array(motor_directions) * base_speed
 
         # TODO: replace sleep statement with something that doesn't depend on execution time of loop
