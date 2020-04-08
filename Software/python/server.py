@@ -222,7 +222,7 @@ stop_button = Button(label="Stop")
 stop_button.on_click(stop_controller)
 
 # plant_model_text = 
-controller_model_text = TextInput(text="D = TransferFunction([1], [1], dt=0.01)")
+controller_model_text = TextInput("D = TransferFunction([1], [1], dt=0.01)")
 update_models = Button(label="Update models")
 update_models.on_click(update_models)
 
