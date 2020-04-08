@@ -1,5 +1,7 @@
 import time
 import numpy as np
+from scipy import signal
+from scipy.signal import TransferFunction
 
 import board
 import busio
@@ -205,7 +207,7 @@ def stop_controller(attrname=None, old=None, new=None):
 def update_models(attrname=None, old=None, new=None):
     stop_controller()
     try:
-        exec(controller_model_text.value)
+        exec("global D\n" + controller_model_text.value)
         print("INFO: controller model updated")
         print(D)
     except:
