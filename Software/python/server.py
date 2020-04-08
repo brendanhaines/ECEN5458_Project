@@ -21,6 +21,8 @@ DEBUG = False
 BAT_MUX_CHAN = 9
 VBAT_THRESHOLD = 11.0
 
+base_motor_speed = 0.1
+
 # Configure MUX for ADC
 mux_io = [None] * 4
 mux_io[0] = digitalio.DigitalInOut(board.D23)
@@ -100,13 +102,14 @@ def controller():
     global servos
     global control_thread_run
     global D    # controller model
+    global base_motor_speed
 
     # TODO: make these parameters editable via network interface
     if D.dt is None:
         sample_interval = 0.01
     else:
         sample_interval = D.dt
-    base_speed = 0.1
+    base_speed = base_motor_speed
     iir_taps = np.append(D.den[1:], 0)
     fir_taps = np.append(D.num, 0)
     fir_taps = np.concatenate([np.zeros((len(iir_taps) + 1) - len(fir_taps)), fir_taps])
@@ -220,11 +223,14 @@ def stop_controller(attrname=None, old=None, new=None):
         pass
 
 def update_models(attrname=None, old=None, new=None):
+    global base_motor_speed
+    global base_motor_speed_box
     stop_controller()
     try:
         exec("global D\n" + controller_model_text.value)
         print("INFO: controller model updated")
         print(D)
+        base_motor_speed = float(base_motor_speed_box.value)
     except:
         print("WARN: invalid controller model")
 
@@ -242,6 +248,7 @@ start_button.on_click(start_controller)
 stop_button = Button(label="Stop")
 stop_button.on_click(stop_controller)
 
+base_motor_speed_box = TextInput(value=str(base_motor_speed))
 # plant_model_text = 
 controller_model_text = TextInput(value="D = TransferFunction([1], [1], dt=0.01)")
 update_models_button = Button(label="Update models")
@@ -272,7 +279,7 @@ def update_battery_voltage(attrname=None, old=None, new=None):
 # controller_iir_taps = TextInput(title="IIR taps", value=str(iir_taps))
 
 controls = column(vbat_text, cal_white_button, cal_black_button, start_button, stop_button)
-controller_model = row(controller_model_text, update_models_button)
+controller_model = row(controller_model_text, base_motor_speed_box, update_models_button)
 # controller_settings = column(controller_sample_interval, controller_base_speed, controller_fir_taps, controller_iir_taps)
 curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot, controller_model))#, controller_settings))
 curdoc().title = "TriangleBot Control Panel"
