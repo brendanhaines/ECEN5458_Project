@@ -252,7 +252,7 @@ def update_battery_voltage(attrname=None, old=None, new=None):
     # vbat = vadc * (10+1)/1
     vbat = vadc * 12.21/1.022
     if vbat < VBAT_THRESHOLD:
-                vbat_text.text = f'<div style="background-color:red;color:white;padding:2%;">Battery Voltage: <b>{vbat:2.1f}V</b></div>'
+        vbat_text.text = f'<div style="background-color:red;color:white;padding:2%;">Battery Voltage: <b>{vbat:2.1f}V</b></div>'
         stop_controller()
         print("WARN: Battery Critically Low")
     else:
