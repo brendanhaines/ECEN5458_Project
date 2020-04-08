@@ -222,9 +222,9 @@ stop_button = Button(label="Stop")
 stop_button.on_click(stop_controller)
 
 # plant_model_text = 
-controller_model_text = TextInput("D = TransferFunction([1], [1], dt=0.01)")
-update_models = Button(label="Update models")
-update_models.on_click(update_models)
+controller_model_text = TextInput(value="D = TransferFunction([1], [1], dt=0.01)")
+update_models_button = Button(label="Update models")
+update_models_button.on_click(update_models)
 
 def update_battery_voltage(attrname=None, old=None, new=None):
     global VBAT_THRESHOLD
@@ -248,7 +248,7 @@ def update_battery_voltage(attrname=None, old=None, new=None):
 # controller_iir_taps = TextInput(title="IIR taps", value=str(iir_taps))
 
 controls = column(vbat_text, cal_white_button, cal_black_button, start_button, stop_button)
-controller_model = row(controller_model_text, update_models)
+controller_model = row(controller_model_text, update_models_button)
 # controller_settings = column(controller_sample_interval, controller_base_speed, controller_fir_taps, controller_iir_taps)
 curdoc().add_root(column(row(controls, brightness_plot, width=800), time_plot, controller_model))#, controller_settings))
 curdoc().title = "TriangleBot Control Panel"
